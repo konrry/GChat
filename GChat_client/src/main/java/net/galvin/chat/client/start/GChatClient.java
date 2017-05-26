@@ -12,6 +12,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import net.galvin.chat.comm.codec.MsgpackDecoder;
 import net.galvin.chat.comm.codec.MsgpackEncoder;
+import net.galvin.chat.comm.pojo.Message;
 
 /**
  * Created by Administrator on 2017/5/8.
@@ -44,6 +45,10 @@ public class GChatClient {
                 group.shutdownGracefully();
             }
         }
+    }
+
+    public void send(Message message){
+        this.channelFuture.channel().writeAndFlush(message);
     }
 
 }

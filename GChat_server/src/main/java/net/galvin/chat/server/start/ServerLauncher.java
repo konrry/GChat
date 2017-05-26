@@ -1,5 +1,7 @@
 package net.galvin.chat.server.start;
 
+import net.galvin.chat.server.netty.GChatServer;
+
 /**
  * Created by galvin on 17-5-24.
  */

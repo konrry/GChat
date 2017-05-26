@@ -1,4 +1,4 @@
-package net.galvin.chat.server.start;
+package net.galvin.chat.server.netty;
 
 /**
  * Created by galvin on 17-5-24.

@@ -1,4 +1,4 @@
-package net.galvin.chat.server.start;
+package net.galvin.chat.server.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
