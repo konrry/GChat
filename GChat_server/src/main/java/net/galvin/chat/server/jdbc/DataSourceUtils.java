@@ -9,12 +9,17 @@ import javax.sql.DataSource;
  */
 public class DataSourceUtils {
 
+    public static String USER_NAME = "root";
+    public static String PASSWORD = "Chujing@190";
+    public static String URL = "jdbc:mysql://10.113.10.190/test";
+    private static String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+
     public static DataSource getDataSource(){
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUsername("root");
-        dataSource.setPassword("Chujing@190");
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://10.113.10.190/test");
+        dataSource.setUsername(USER_NAME);
+        dataSource.setPassword(PASSWORD);
+        dataSource.setDriverClassName(DRIVER_CLASS_NAME);
+        dataSource.setUrl(URL);
         return dataSource;
     }
 

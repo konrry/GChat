@@ -38,7 +38,7 @@ public class GChatClient {
                             ch.pipeline().addLast(new EchoClienthandler());
                         }
                     });
-            channelFuture = b.connect(AppClientConfig.get().HOST,AppClientConfig.get().PORT);
+            channelFuture = b.connect(AppClientConfig.HOST,AppClientConfig.PORT);
         }catch (Exception e){
             e.printStackTrace();
             if(group != null){

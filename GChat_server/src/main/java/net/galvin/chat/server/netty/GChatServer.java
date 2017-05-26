@@ -42,7 +42,7 @@ public class GChatServer {
                                     .addLast(new MsgpackEncoder()).addLast(new EchoServerHandler());
                         }
                     });
-            channelFuture = bootstrap.bind(AppServerConfig.get().PORT);
+            channelFuture = bootstrap.bind(AppServerConfig.HOST,AppServerConfig.PORT);
         }catch (Exception e){
             e.printStackTrace();
             if(workerGroup != null){
