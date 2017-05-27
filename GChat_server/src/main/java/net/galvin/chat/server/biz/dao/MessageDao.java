@@ -27,13 +27,13 @@ public class MessageDao {
     }
 
     public int insert(Message message){
-        String insertSql = "insert into message (id,content,create_time,send_time,receive_time,status,from_user,to_user) values (:id,:content,:createTime,:sendTime,:receiveTime,:status,:fromUser,:toUser)";
+        String insertSql = "insert into MESSAGE (id,content,create_time,send_time,receive_time,status,from_user,to_user) values (:id,:content,:createTime,:sendTime,:receiveTime,:status,:fromUser,:toUser)";
         return this.jdbcTemplate.update(insertSql,message,Message.class);
     }
 
     public int update(Message message){
         if(message != null && message.getId() != null){
-            StringBuilder updateSqlBuilder = new StringBuilder("update message set id = :id");
+            StringBuilder updateSqlBuilder = new StringBuilder("update MESSAGE set id = :id");
             if(StringUtils.isNotEmpty(message.getContent())){
                 updateSqlBuilder.append(" ,content = :content");
             }

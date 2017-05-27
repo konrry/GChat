@@ -21,6 +21,7 @@ public class Message implements Serializable {
     private Date createTime;
     private Date receiveTime;
     private Date sendTime;
+    private Date updateTime;
     private String status;
 
     public Message(){}
@@ -92,6 +93,14 @@ public class Message implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override

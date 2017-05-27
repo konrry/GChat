@@ -52,7 +52,7 @@ public class AppServerConfig {
 
         DataSourceUtils.USER_NAME = userName;
         DataSourceUtils.PASSWORD = password;
-        DataSourceUtils.USER_NAME = url;
+        DataSourceUtils.URL = url;
 
     }
 

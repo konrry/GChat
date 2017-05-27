@@ -39,7 +39,8 @@ public class GChatServer {
                                     .addLast("frameDecoder",new LengthFieldBasedFrameDecoder(65535,0,2,0,2))
                                     .addLast("frameEncoder",new LengthFieldPrepender(2))
                                     .addLast(new MsgpackDecoder())
-                                    .addLast(new MsgpackEncoder()).addLast(new EchoServerHandler());
+                                    .addLast(new MsgpackEncoder())
+                                    .addLast(new EchoServerHandler());
                         }
                     });
             channelFuture = bootstrap.bind(AppServerConfig.HOST,AppServerConfig.PORT);
@@ -54,7 +55,5 @@ public class GChatServer {
         }
 
     }
-
-
 
 }

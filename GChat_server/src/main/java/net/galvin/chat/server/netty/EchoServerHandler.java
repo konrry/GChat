@@ -15,9 +15,11 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        Message message = (Message) msg;
-        SessionManager.put(message.getFromUser(),ctx.channel());
-        messageService.process(message);
+        try {
+            readAndProcess(ctx,msg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -34,4 +36,11 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
     }
+
+    private void readAndProcess(ChannelHandlerContext ctx, Object msg){
+        Message message = (Message) msg;
+        SessionManager.put(message.getFromUser(),ctx.channel());
+        messageService.process(message);
+    }
+
 }
