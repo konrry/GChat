@@ -18,30 +18,55 @@ public class ClientLauncher {
         gChatClient = new GChatClient();
         gChatClient.launch();
 
-
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please input your name: ");
-        String yourName = scanner.nextLine();
-        System.out.println("Please input your friend's name: ");
-        String friendName = scanner.nextLine();
-
-        Message message = new Message("SESSION_ALIVE");
-        message.setCreateTime(new Date());
-        message.setFromUser(yourName);
-        gChatClient.send(message);
-
-        System.out.println("Please input msg: ");
-        while (scanner.hasNext()){
-            String content = scanner.nextLine();
-            message = new Message(content);
-            message.setCreateTime(new Date());
-            message.setFromUser(yourName);
-            message.setToUser(friendName);
-            gChatClient.send(message);
-            System.out.println("Please input: ");
+        String yourName = null;
+        String friendName = null;
+        while (true){
+            if(yourName == null){
+                System.out.println("Please input your name: ");
+                yourName = scanner.nextLine();
+                if("exit".equalsIgnoreCase(yourName)){
+                    if(friendName != null){
+                        friendName = null;
+                    }else if(yourName != null){
+                        yourName = null;
+                    }
+                }else {
+                    Message message = new Message("SESSION_ALIVE");
+                    message.setCreateTime(new Date());
+                    message.setFromUser(yourName);
+                    gChatClient.send(message);
+                }
+            }else if(friendName == null){
+                System.out.println("Please input your friend's name: ");
+                friendName = scanner.nextLine();
+                if("exit".equalsIgnoreCase(friendName)){
+                    if(friendName != null){
+                        friendName = null;
+                    }else if(yourName != null){
+                        yourName = null;
+                    }
+                }
+            }else {
+                System.out.println("Please input msg: ");
+                String content = scanner.nextLine();
+                if("exit".equalsIgnoreCase(content)){
+                    if(friendName != null){
+                        friendName = null;
+                    }else if(yourName != null){
+                        yourName = null;
+                    }
+                }else {
+                    Message message = new Message(content);
+                    message.setCreateTime(new Date());
+                    message.setFromUser(yourName);
+                    message.setToUser(friendName);
+                    gChatClient.send(message);
+                }
+            }
         }
 
-        synchronized (LOCK){
+        /*synchronized (LOCK){
             while (isRunning){
                 try {
                     System.out.println("I am running, and the main thread will wait.");
@@ -50,7 +75,7 @@ public class ClientLauncher {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
 
