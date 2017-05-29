@@ -12,8 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class EchoClienthandler extends ChannelInboundHandlerAdapter {
 
-    private AtomicInteger count = new AtomicInteger(1);
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
     }

@@ -1,4 +1,4 @@
-package net.galvin.chat.server.jdbc;
+package net.galvin.chat.server.jdbc.comm;
 
 /**
  * Created by galvin on 17-5-27.

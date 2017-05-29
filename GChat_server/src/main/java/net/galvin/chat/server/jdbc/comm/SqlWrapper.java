@@ -1,4 +1,4 @@
-package net.galvin.chat.server.jdbc;
+package net.galvin.chat.server.jdbc.comm;
 
 import java.util.List;
 

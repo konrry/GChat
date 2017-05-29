@@ -1,6 +1,6 @@
 package net.galvin.chat.server.netty;
 
-import net.galvin.chat.server.jdbc.DataSourceUtils;
+import net.galvin.chat.server.jdbc.comm.DataSourceUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package net.galvin.chat.server.jdbc;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import net.galvin.chat.server.jdbc.comm.DataSourceUtils;
 
 import javax.sql.DataSource;
 

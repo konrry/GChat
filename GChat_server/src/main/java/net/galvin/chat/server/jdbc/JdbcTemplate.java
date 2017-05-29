@@ -1,9 +1,16 @@
 package net.galvin.chat.server.jdbc;
 
 
+import net.galvin.chat.server.jdbc.comm.JdbcLogging;
+import net.galvin.chat.server.jdbc.comm.JdbcUtils;
+import net.galvin.chat.server.jdbc.row.mapper.BeanRowMapperImpl;
+import net.galvin.chat.server.jdbc.row.mapper.RowMapper;
+import net.galvin.chat.server.jdbc.row.mapper.RowMapperImpl;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -117,11 +124,27 @@ public class JdbcTemplate {
 
     public <T> List<Map<String,Object>> queryForMapList(String sql,Map<String,Object> params){
         List<Map<String,Object>> target = null;
+        PreparedStatement preparedStatement = JdbcUtils.createStatement(sql,getConnection(),params);
+        try {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            RowMapper<List<Map<String,Object>>> rowMapper = RowMapperImpl.get();
+            target = rowMapper.action(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return target;
     }
 
-    public <T> List<T> queryForObjectList(String sql,Map<String,Object> params){
+    public <T> List<T> queryForObjectList(String sql,Map<String,Object> params,Class<T> tClass){
         List<T> tList = null;
+        PreparedStatement preparedStatement = JdbcUtils.createStatement(sql,getConnection(),params);
+        try {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            RowMapper<List<T>> rowMapper = new BeanRowMapperImpl<T>(tClass);
+            tList = rowMapper.action(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return tList;
     }
 

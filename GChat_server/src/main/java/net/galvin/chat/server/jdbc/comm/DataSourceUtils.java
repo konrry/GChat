@@ -1,4 +1,4 @@
-package net.galvin.chat.server.jdbc;
+package net.galvin.chat.server.jdbc.comm;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -10,8 +10,8 @@ import javax.sql.DataSource;
 public class DataSourceUtils {
 
     public static String USER_NAME = "root";
-    public static String PASSWORD = "Chujing@190";
-    public static String URL = "jdbc:mysql://10.113.10.190/test";
+    public static String PASSWORD = "123456";
+    public static String URL = "jdbc:mysql://127.0.0.1:3306/test";
     private static String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
     public static DataSource getDataSource(){
