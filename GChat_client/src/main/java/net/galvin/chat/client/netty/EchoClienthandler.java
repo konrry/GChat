@@ -1,4 +1,4 @@
-package net.galvin.chat.client.start;
+package net.galvin.chat.client.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

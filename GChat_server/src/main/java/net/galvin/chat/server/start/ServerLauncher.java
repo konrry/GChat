@@ -15,11 +15,11 @@ public class ServerLauncher {
         gChatServer = new GChatServer();
         gChatServer.launch();
 
-        synchronized (LOCK){
-            while (isRunning){
+        while (isRunning){
+            synchronized (LOCK){
                 try {
                     System.out.println("I am running, and the main thread will wait.");
-                    LOCK.wait();
+                    LOCK.wait(10000);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }

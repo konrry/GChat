@@ -1,4 +1,4 @@
-package net.galvin.chat.client.start;
+package net.galvin.chat.client.netty;
 
 import org.apache.commons.lang3.StringUtils;
 

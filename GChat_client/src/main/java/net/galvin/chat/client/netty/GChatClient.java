@@ -1,4 +1,4 @@
-package net.galvin.chat.client.start;
+package net.galvin.chat.client.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -10,6 +10,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.galvin.chat.comm.codec.MsgpackDecoder;
 import net.galvin.chat.comm.codec.MsgpackEncoder;
 import net.galvin.chat.comm.pojo.Message;
@@ -49,6 +51,15 @@ public class GChatClient {
 
     public void send(Message message){
         this.channelFuture.channel().writeAndFlush(message);
+        this.channelFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
+            public void operationComplete(Future<? super Void> future) throws Exception {
+                if(future.isSuccess()){
+                    System.out.println("Netty Client： 发送成功。");
+                }else {
+                    System.out.println("Netty Client： 发送失败。");
+                }
+            }
+        });
     }
 
 }
