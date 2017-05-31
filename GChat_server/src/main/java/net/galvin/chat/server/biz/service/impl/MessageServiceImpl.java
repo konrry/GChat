@@ -9,6 +9,7 @@ import net.galvin.chat.server.netty.SessionManager;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by galvin on 17-5-26.
@@ -39,12 +40,19 @@ public class MessageServiceImpl implements MessageService {
         message.setReceiveTime(new Date());
         message.setStatus(ResUtils.MESSAGE_STATUS.TO_SEND.name());
         this.insert(message);
-        String tempUser = message.getFromUser();
-        message.setFromUser(message.getToUser());
-        message.setToUser(tempUser);
-        Session session = SessionManager.get(message.getFromUser());
+        Session session = SessionManager.get(message.getToUser());
         if(session != null){
             session.send(message);
+            message.setStatus(ResUtils.MESSAGE_STATUS.SENT.name());
+        }
+        session = SessionManager.get(message.getFromUser());
+        if(session != null){
+            List<Message> messageList = this.messageDao.query(null,null,ResUtils.MESSAGE_STATUS.TO_SEND.name(),null,message.getFromUser());
+            for(Message tempMsg : messageList){
+                session.send(tempMsg);
+                tempMsg.setStatus(ResUtils.MESSAGE_STATUS.SENT.name());
+                this.messageDao.update(tempMsg);
+            }
         }
 
     }

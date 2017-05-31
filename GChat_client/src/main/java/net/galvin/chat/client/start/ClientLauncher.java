@@ -11,6 +11,7 @@ import java.util.Scanner;
  */
 public class ClientLauncher {
 
+    private volatile static boolean isChatting = true;
     private volatile static boolean isRunning = true;
     private final static Object LOCK = new Object();
     private static GChatClient gChatClient;
@@ -22,7 +23,7 @@ public class ClientLauncher {
         Scanner scanner = new Scanner(System.in);
         String yourName = null;
         String friendName = null;
-        while (true){
+        while (isChatting){
             if(yourName == null){
                 System.out.println("Please input your name: ");
                 String content = scanner.nextLine();
@@ -57,8 +58,8 @@ public class ClientLauncher {
             }
         }
 
-        /*synchronized (LOCK){
-            while (isRunning){
+        while (isRunning){
+            synchronized (LOCK){
                 try {
                     System.out.println("I am running, and the main thread will wait.");
                     LOCK.wait();
@@ -66,7 +67,7 @@ public class ClientLauncher {
                     e.printStackTrace();
                 }
             }
-        }*/
+        }
     }
 
 
