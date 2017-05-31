@@ -29,32 +29,32 @@ public class JdbcTemplate {
     public int update(String sql, Map<String,Object> params){
         int rowCount = 0;
         final Connection connection = getConnection();
+        if(connection == null){
+            JdbcLogging.error("The connection is null.");
+            return rowCount;
+        }
         PreparedStatement preparedStatement = null;
-        if(connection != null){
+        try {
             preparedStatement = JdbcUtils.createStatement(sql,connection,params);
-            try {
-                rowCount = preparedStatement.executeUpdate();
-                if(!connection.getAutoCommit()){
-                    connection.commit();
+            rowCount = preparedStatement.executeUpdate();
+            if(!connection.getAutoCommit()){
+                connection.commit();
+            }
+        } catch (Exception e) {
+            JdbcLogging.error(e);
+        }finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    JdbcLogging.error(e);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }finally {
-                if(preparedStatement != null){
-                    try {
-                        preparedStatement.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        JdbcLogging.error(e.getMessage());
-                    }
-                }
-                if(connection != null){
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        JdbcLogging.error(e.getMessage());
-                    }
+            }
+            if(connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    JdbcLogging.error(e);
                 }
             }
         }
@@ -64,32 +64,32 @@ public class JdbcTemplate {
     public <T> int update(String sql,T t, Class<T> tClass){
         int rowCount = 0;
         final Connection connection = getConnection();
+        if(connection == null){
+            JdbcLogging.error("The connection is null.");
+            return rowCount;
+        }
         PreparedStatement preparedStatement = null;
-        if(connection != null){
+        try {
             preparedStatement = JdbcUtils.createStatement(sql,connection,t,tClass);
-            try {
-                rowCount = preparedStatement.executeUpdate();
-                if(!connection.getAutoCommit()){
-                    connection.commit();
+            rowCount = preparedStatement.executeUpdate();
+            if(!connection.getAutoCommit()){
+                connection.commit();
+            }
+        } catch (Exception e) {
+            JdbcLogging.error(e);
+        }finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    JdbcLogging.error(e);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }finally {
-                if(preparedStatement != null){
-                    try {
-                        preparedStatement.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        JdbcLogging.error(e.getMessage());
-                    }
-                }
-                if(connection != null){
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        JdbcLogging.error(e.getMessage());
-                    }
+            }
+            if(connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    JdbcLogging.error(e);
                 }
             }
         }
@@ -124,26 +124,72 @@ public class JdbcTemplate {
 
     public <T> List<Map<String,Object>> queryForMapList(String sql,Map<String,Object> params){
         List<Map<String,Object>> target = null;
-        PreparedStatement preparedStatement = JdbcUtils.createStatement(sql,getConnection(),params);
+        Connection connection = getConnection();
+        if(connection == null){
+            JdbcLogging.error("The connection is null.");
+            return target;
+        }
+        PreparedStatement preparedStatement = null;
         try {
+            preparedStatement = JdbcUtils.createStatement(sql,connection,params);
             ResultSet resultSet = preparedStatement.executeQuery();
             RowMapper<List<Map<String,Object>>> rowMapper = RowMapperImpl.get();
             target = rowMapper.action(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            JdbcLogging.error(e);
+        }finally {
+            if(preparedStatement != null){
+                if(preparedStatement != null){
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException e) {
+                        JdbcLogging.error(e);
+                    }
+                }
+                if(connection != null){
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        JdbcLogging.error(e);
+                    }
+                }
+            }
         }
         return target;
     }
 
     public <T> List<T> queryForObjectList(String sql,Map<String,Object> params,Class<T> tClass){
         List<T> tList = null;
-        PreparedStatement preparedStatement = JdbcUtils.createStatement(sql,getConnection(),params);
+        Connection connection = getConnection();
+        if(connection == null){
+            JdbcLogging.error("The connection is null.");
+            return tList;
+        }
+        PreparedStatement preparedStatement = null;
         try {
+            preparedStatement = JdbcUtils.createStatement(sql,getConnection(),params);
             ResultSet resultSet = preparedStatement.executeQuery();
             RowMapper<List<T>> rowMapper = new BeanRowMapperImpl<T>(tClass);
             tList = rowMapper.action(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            JdbcLogging.error(e);
+        }finally {
+            if(preparedStatement != null){
+                if(preparedStatement != null){
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException e) {
+                        JdbcLogging.error(e);
+                    }
+                }
+                if(connection != null){
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        JdbcLogging.error(e);
+                    }
+                }
+            }
         }
         return tList;
     }
@@ -155,6 +201,7 @@ public class JdbcTemplate {
 
     private Connection getConnection(){
         if(dataSource == null){
+            JdbcLogging.error("JdbcTemplate.dataSource can not be null.");
             return null;
         }
         Connection connection = null;
@@ -162,9 +209,8 @@ public class JdbcTemplate {
             connection = dataSource.getConnection();
         }catch (Exception e){
             e.printStackTrace();
-        }
-        if(connection == null){
-            return null;
+            JdbcLogging.error("Failed to get db connection from datasource.");
+            JdbcLogging.error(e);
         }
         return connection;
     }

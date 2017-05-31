@@ -47,7 +47,6 @@ public class JdbcUtils {
         }
         sqlWrapper.setSql(sql);
         sqlWrapper.setSqlParamList(sqlParamList);
-        sqlWrapper.setValid(true);
         return sqlWrapper;
     }
 
@@ -58,7 +57,7 @@ public class JdbcUtils {
      * @param tClass
      * @param <T>
      */
-    private static  <T> void initParamValue(SqlWrapper sqlWrapper, T t, Class<T> tClass){
+    private static  <T> void initParamValue(SqlWrapper sqlWrapper, T t, Class<T> tClass) throws Exception{
         Map<String,Method> methodMap = new HashMap<String,Method>();
         Method[] methodArr = tClass.getMethods();
         for(Method method : methodArr){
@@ -72,16 +71,10 @@ public class JdbcUtils {
                             : fieldName.substring(0,1).toUpperCase()+fieldName.substring(1,fieldName.length()));
             Method method =  methodMap.get(methodName);
             if(method == null){
-                System.out.println("The sql's "+fieldName+" does not get method.");
-                sqlWrapper.setValid(false);
-                return;
+                throw new Exception("The sql's "+fieldName+" does not get method.");
             }
-            try {
-                Object value = method.invoke(t,null);
-                sqlParam.setValue(value);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Object value = method.invoke(t,null);
+            sqlParam.setValue(value);
         }
     }
 
@@ -94,25 +87,13 @@ public class JdbcUtils {
      * @param <T>
      * @return
      */
-    public static <T> PreparedStatement createStatement(String sql, Connection connection,T t, Class<T> tClass){
+    public static <T> PreparedStatement createStatement(String sql, Connection connection,T t, Class<T> tClass) throws Exception{
         PreparedStatement preparedStatement = null;
         SqlWrapper sqlWrapper = analysisSql(sql);
-        if(!sqlWrapper.isValid()){
-            return preparedStatement;
-        }
         initParamValue(sqlWrapper,t,tClass);
-        if(!sqlWrapper.isValid()){
-            return preparedStatement;
-        }
-        if(connection != null){
-            try {
-                preparedStatement = connection.prepareStatement(sqlWrapper.getSql());
-                for(SqlParam sqlParam : sqlWrapper.getSqlParamList()){
-                    preparedStatement.setObject(sqlParam.getIndex(),sqlParam.getValue());
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        preparedStatement = connection.prepareStatement(sqlWrapper.getSql());
+        for(SqlParam sqlParam : sqlWrapper.getSqlParamList()){
+            preparedStatement.setObject(sqlParam.getIndex(),sqlParam.getValue());
         }
         return preparedStatement;
     }
@@ -122,21 +103,15 @@ public class JdbcUtils {
      * @param sqlWrapper
      * @param params
      */
-    private static  void initParamValue(SqlWrapper sqlWrapper, Map<String,Object> params){
+    private static  void initParamValue(SqlWrapper sqlWrapper, Map<String,Object> params) throws Exception {
         List<SqlParam> sqlParamList = sqlWrapper.getSqlParamList();
         for(SqlParam sqlParam : sqlParamList){
             String fieldName = sqlParam.getName();
-            try {
-                Object value = params.get(fieldName);
-                if(value == null){
-                    System.out.println("The sql's "+fieldName+" does not has value.");
-                    sqlWrapper.setValid(false);
-                    return;
-                }
-                sqlParam.setValue(value);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if(!params.containsKey(fieldName)){
+                throw new Exception("The sql's "+fieldName+" does not been contained by params.");
             }
+            Object value = params.get(fieldName);
+            sqlParam.setValue(value);
         }
     }
 
@@ -147,33 +122,17 @@ public class JdbcUtils {
      * @param params
      * @return
      */
-    public static PreparedStatement createStatement(String sql, Connection connection,Map<String,Object> params){
+    public static PreparedStatement createStatement(String sql, Connection connection,Map<String,Object> params) throws Exception {
         PreparedStatement preparedStatement = null;
         if(params == null){
-            try {
-                preparedStatement = connection.prepareStatement(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            preparedStatement = connection.prepareStatement(sql);
             return preparedStatement;
         }
         SqlWrapper sqlWrapper = analysisSql(sql);
-        if(!sqlWrapper.isValid()){
-            return preparedStatement;
-        }
         initParamValue(sqlWrapper,params);
-        if(!sqlWrapper.isValid()){
-            return preparedStatement;
-        }
-        if(connection != null){
-            try {
-                preparedStatement = connection.prepareStatement(sqlWrapper.getSql());
-                for(SqlParam sqlParam : sqlWrapper.getSqlParamList()){
-                    preparedStatement.setObject(sqlParam.getIndex(),sqlParam.getValue());
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        preparedStatement = connection.prepareStatement(sqlWrapper.getSql());
+        for(SqlParam sqlParam : sqlWrapper.getSqlParamList()){
+            preparedStatement.setObject(sqlParam.getIndex(),sqlParam.getValue());
         }
         return preparedStatement;
     }

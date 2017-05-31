@@ -9,7 +9,6 @@ public class SqlWrapper {
 
     private List<SqlParam> sqlParamList;
     private String sql;
-    private boolean isValid = false;
 
     public List<SqlParam> getSqlParamList() {
         return sqlParamList;
@@ -25,13 +24,5 @@ public class SqlWrapper {
 
     public void setSql(String sql) {
         this.sql = sql;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public void setValid(boolean valid) {
-        isValid = valid;
     }
 }

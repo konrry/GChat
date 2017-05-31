@@ -37,6 +37,8 @@ public class MessageServiceImpl implements MessageService {
 
 
     public void process(Message message) {
+
+        //保存消息发送消息
         message.setReceiveTime(new Date());
         message.setStatus(ResUtils.MESSAGE_STATUS.TO_SEND.name());
         this.insert(message);
@@ -44,14 +46,19 @@ public class MessageServiceImpl implements MessageService {
         if(session != null){
             session.send(message);
             message.setStatus(ResUtils.MESSAGE_STATUS.SENT.name());
+            message.setSendTime(new Date());
+            this.update(message);
         }
+
+        //发消息人的历史消息。
         session = SessionManager.get(message.getFromUser());
         if(session != null){
             List<Message> messageList = this.messageDao.query(null,null,ResUtils.MESSAGE_STATUS.TO_SEND.name(),null,message.getFromUser());
             for(Message tempMsg : messageList){
                 session.send(tempMsg);
                 tempMsg.setStatus(ResUtils.MESSAGE_STATUS.SENT.name());
-                this.messageDao.update(tempMsg);
+                tempMsg.setSendTime(new Date());
+                this.update(tempMsg);
             }
         }
 
